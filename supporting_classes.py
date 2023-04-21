@@ -45,7 +45,8 @@ class Player:
         self.dribble = False
 
     def captureBall(self, ball):
-        if ball.pos_x == self.pos_x and ball.pos_y == self.pos_y:
+        distToBall = np.linalg.norm([ball.pos_x - self.pos_x, ball.pos_y - self.pos_y], 2)
+        if distToBall < 5 and self.dribble == False and ball.captured == False:
             self.dribble = True
             ball.captured = True
             ball.playerHost = self.playerId
@@ -97,6 +98,9 @@ class Player:
         if valid:
             self.pos_x = proposed_x
             self.pos_y = proposed_y
+
+            # try to capture the ball
+            self.captureBall(ball)
         
             if self.dribble == True:
                 ball.pos_x = self.pos_x
