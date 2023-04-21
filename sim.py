@@ -12,11 +12,11 @@ agent2 = AgentNaive(team=Team.RIGHT)
 
 while(env.gameRunning):
 
-    # actions1 = agent1.act(env)
+    actions1 = agent1.act(env)
     actions2 = agent2.act(env)
 
-    # for action, playerid, args in actions1:
-    #     env.execute(action, playerid, args)
+    for action, playerid, args in actions1:
+        env.execute(action, playerid, args)
     for action, playerid, args in actions2:
         env.execute(action, playerid, args)
 
