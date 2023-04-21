@@ -8,6 +8,7 @@ class Enviornment:
         self.listOfPlayers = []
         self.listOfGoals = []
         self.ball = None
+        self.gameRunning = True
 
         self.dim_x = 1000
         self.dim_y = 500
@@ -18,7 +19,7 @@ class Enviornment:
         top_y = mid_y + 100
         bottom_y = mid_y - 100
         goal1 = Goal(bottom_y, top_y, 0, Team.RIGHT)
-        goal2 = Goal(bottom_y, top_y, self.dim_x - 10, Team.RIGHT)
+        goal2 = Goal(bottom_y, top_y, self.dim_x - 10, Team.LEFT)
 
         self.listOfGoals.append(goal1)
         self.listOfGoals.append(goal2)
@@ -109,11 +110,16 @@ class Enviornment:
     def testShoot(self, playerId, team):
         goal = None
         for g in self.listOfGoals:
-            if g.team != team:
+            if g.goalTeam != team:
                 goal = g
                 break
+        
+        # print("Env test shoot")
 
         return self.listOfPlayers[playerId].test_shootToGoal(self.ball, goal, self.listOfPlayers)
+
+    def testTackle(self, playerId, team):
+        return self.listOfPlayers[playerId].test_tackleBall(self.ball, self.listOfPlayers)
 
     ####### Player actions #######
 
@@ -121,7 +127,18 @@ class Enviornment:
         self.listOfPlayers[playerID].move(dir, self.listOfPlayers, self.ball, self.dim_x, self.dim_y)
     
     def _playerShootBall(self, playerID):
-        self.listOfPlayers[playerID].shootToGoal(self.ball)
+        player = self.listOfPlayers[playerID]
+        goal = None
+        for g in self.listOfGoals:
+            if g.goalTeam != player.playerTeam:
+                goal = g
+                break
+        
+        success = player.shootToGoal(self.ball, goal, self.listOfPlayers)
+
+        if success:
+            self.gameRunning = False
+            print("GOAL, Game over, winning team: ", player.playerTeam)
 
     def _passBall(self, playerID, targetPlayerID):
         targetPlayer = self.listOfPlayers[targetPlayerID]
@@ -136,7 +153,3 @@ class Enviornment:
             self._passBall(playerId, args[0])
         if action == Actions.TACKLE_BALL:
             self._tackleBall(playerId)
-
-
-    
-

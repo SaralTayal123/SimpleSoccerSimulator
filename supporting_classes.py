@@ -22,7 +22,7 @@ class Ball:
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.captured = False
-        self.playerHost = None
+        self.playerId = None
 
     def move(self, pos_x, pos_y):
         self.pos_x = pos_x
@@ -49,7 +49,7 @@ class Player:
         if distToBall < 5 and self.dribble == False and ball.captured == False:
             self.dribble = True
             ball.captured = True
-            ball.playerHost = self.playerId
+            ball.playerId = self.playerId
         
     def test_tackleBall(self, ball, listOfPlayers):
         if self.dribble == True:
@@ -66,7 +66,7 @@ class Player:
             tackleSuccess = np.random.getrandbits(1)
             if tackleSuccess:
                 listOfPlayers[ball.playerHost].dribble = False
-                ball.playerHost = self.playerId
+                ball.playerId = self.playerId
                 self.dribble = True
 
     
@@ -132,6 +132,8 @@ class Player:
     
     def passBall(self, ball, destPlayer, listOfPlayers):
         assert(self.dribble == True)
+    
+        print("passing ball from player " + str(self.playerId) + " to player " + str(destPlayer.playerId))
 
         playerIntercept = self.test_passBall(ball, destPlayer, listOfPlayers)
 
@@ -147,6 +149,8 @@ class Player:
         self.dribble = False
         playerIntercept.dribble = True
         ball.playerId = playerIntercept.playerId
+        ball.pos_x = playerIntercept.pos_x
+        ball.pos_y = playerIntercept.pos_y
 
         return passWorked
 
@@ -155,9 +159,11 @@ class Player:
 
         for player in listOfPlayers:
             if player != self:
-                resolution = 100
+                resolution = 1000
                 interpolate_x = np.linspace(self.pos_x, goal.pos_x, resolution)
-                interpolate_y = np.linspace(self.pos_y, np.mean(goal.pos_y_bottom, goal.pos_y_top), resolution)
+                goalMid = goal.pos_y_bottom + (goal.pos_y_top - goal.pos_y_bottom) / 2
+                goalMid = int(goalMid)
+                interpolate_y = np.linspace(self.pos_y, goalMid, resolution)
                 for i in range(resolution):
                     distance = np.linalg.norm([interpolate_x[i] - player.pos_x, interpolate_y[i] - player.pos_y], 2)
                     if distance < 5:
