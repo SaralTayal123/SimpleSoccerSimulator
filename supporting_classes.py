@@ -35,6 +35,10 @@ class Goal:
         self.pos_x = pos_x
         self.goalTeam = goalTeam
 
+    def get_mid(self):
+        goalMid = self.pos_y_bottom + (self.pos_y_top - self.pos_y_bottom) / 2
+        return (self.pos_x, goalMid)
+
 
 class Player:
     def __init__(self, pos_x, pos_y, playerId, playerTeam) -> None:

@@ -120,6 +120,11 @@ class Enviornment:
 
     def testTackle(self, playerId, team):
         return self.listOfPlayers[playerId].test_tackleBall(self.ball, self.listOfPlayers)
+    
+    def getGoal(self, team):
+        for g in self.listOfGoals:
+            if g.goalTeam != team:
+                return g
 
     ####### Player actions #######
 

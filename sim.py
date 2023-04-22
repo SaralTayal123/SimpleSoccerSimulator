@@ -3,11 +3,12 @@ from env import Enviornment
 from agent import Agent
 from agentNaive import Agent as AgentNaive
 from supporting_classes import Team
+from agentBharath import Agent as AgentBharath
 
 env = Enviornment()
 env.init_random_game(2)
 
-agent1 = Agent(team=Team.LEFT)
+agent1 = AgentBharath(team=Team.LEFT, opp=Team.RIGHT)
 agent2 = AgentNaive(team=Team.RIGHT)
 
 while(env.gameRunning):
