@@ -7,10 +7,10 @@ from agentBharath import Agent as AgentBharath
 from macroAgent import Agent as MacroAgent
 
 env = Enviornment()
-env.init_random_game(2)
-# env.init_2player_game()
+# env.init_random_game(2)
+env.init_2player_game()
 
-agent2 = AgentNaive(team=Team.RIGHT)
+agent2 = Agent(team=Team.RIGHT)
 agent1 = MacroAgent(team=Team.LEFT)
 
 while(env.gameRunning):
@@ -24,4 +24,5 @@ while(env.gameRunning):
         env.execute(action, playerid, args)
 
     env.drawEnviornment(1) # ms update rate
-    break
+
+    # break

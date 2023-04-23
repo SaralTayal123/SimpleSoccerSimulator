@@ -36,7 +36,7 @@ class Goal:
         self.goalTeam = goalTeam
 
     def get_mid(self):
-        goalMid = self.pos_y_bottom + (self.pos_y_top - self.pos_y_bottom) / 2
+        goalMid = int(self.pos_y_bottom + (self.pos_y_top - self.pos_y_bottom) / 2)
         return (self.pos_x, goalMid)
 
 

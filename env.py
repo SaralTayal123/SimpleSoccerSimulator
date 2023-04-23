@@ -148,6 +148,9 @@ class Enviornment:
     def _passBall(self, playerID, targetPlayerID):
         targetPlayer = self.listOfPlayers[targetPlayerID]
         self.listOfPlayers[playerID].passBall(self.ball, targetPlayer, self.listOfPlayers)
+    
+    def _tackleBall(self, playerID):
+        self.listOfPlayers[playerID].tackleBall(self.ball, self.listOfPlayers)
 
     def execute(self, action, playerId, args):
         if action == Actions.MOVE:
