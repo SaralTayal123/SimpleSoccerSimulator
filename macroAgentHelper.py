@@ -158,7 +158,7 @@ class State():
         actionList = []
         for agent in self.players_home:
             values = [0 for _ in range(len(MacroActions)+1)]
-            if (agent.possession):
+            if agent.possession:
                 values[MacroActions.Pass.value] = 0
                 values[MacroActions.Tackle.value] = 0
                 values[MacroActions.Shoot.value] = 1000
@@ -173,7 +173,7 @@ class State():
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 0
 
-                if (self.agent_team == Team.LEFT):
+                if self.agent_team == Team.LEFT:
                     values[MacroActions.Left.value] = 0
                     values[MacroActions.Right.value] = 10
                 else:
@@ -204,15 +204,15 @@ class State():
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 0
             
-            exploration_tendency = 1
+            exploration_tendency = 10
             for action in MacroActions:
                 if self.testLegality(action, agent):
                     values[action.value] += exploration_tendency
                 else:
                     values[action.value] = 0
 
-            actionList.append(random.choices([action for action in MacroActions], weights=values[1:], k=1)[0])
-        # print(actionList)
+            actionList.append(random.choices([action for action in MacroActions], \
+                                             weights=values[1:], k=1)[0])
         
         return actionList
 
