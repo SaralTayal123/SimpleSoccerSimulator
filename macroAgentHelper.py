@@ -314,6 +314,7 @@ class State():
                     pass_y = player.y
                 else:
                     passFailed = True
+                    break
 
                 xCheck = range(source_x + 1, pass_x)
                 yCheck = range(source_y + 1, pass_y)

@@ -80,7 +80,7 @@ class Agent():
             # stateInit.print_state()
 
 
-            mctsSearcher = MCTSSearcher(500)
+            mctsSearcher = MCTSSearcher(2000)
             macro_action = mctsSearcher.search(stateInit, debug_print=True)
             # macro_action = MCTSAction(stateInit.getHeuristicAction())
             print("action: ")
