@@ -10,7 +10,7 @@ NUM_ZONES_X = 50
 NUM_ZONES_Y = 25
 
 NUM_PLAYERS = 2
-MAX_DEPTH = 500
+MAX_DEPTH = 200
 
 class MacroActions(Enum):
     Up = 1
