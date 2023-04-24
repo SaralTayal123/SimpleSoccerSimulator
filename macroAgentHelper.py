@@ -91,9 +91,11 @@ class State():
                 source_y = player.y
                 goal_x = self.env.getGoal(self.oppositeTeam).get_mid()[0]
                 goal_y = self.env.getGoal(self.oppositeTeam).get_mid()[1]
+                goal_zone_x = int((goal_x / self.env.dim_x) * NUM_ZONES_X)
+                goal_zone_y = int((goal_y / self.env.dim_y) * NUM_ZONES_Y)
 
-                xCheck = range(source_x + 1, goal_x)
-                yCheck = range(source_y + 1, goal_y)
+                xCheck = range(source_x + 1, goal_zone_x)
+                yCheck = range(source_y + 1, goal_zone_y)
 
                 for opponent_player in self.players_opponent:
                     dest_x = opponent_player.x
@@ -269,9 +271,11 @@ class State():
                     source_y = player.y
                     goal_x = self.env.getGoal(self.oppositeTeam).get_mid()[0]
                     goal_y = self.env.getGoal(self.oppositeTeam).get_mid()[1]
+                    goal_zone_x = int((goal_x / self.env.dim_x) * NUM_ZONES_X)
+                    goal_zone_y = int((goal_y / self.env.dim_y) * NUM_ZONES_Y)
 
-                    xCheck = range(source_x + 1, goal_x)
-                    yCheck = range(source_y + 1, goal_y)
+                    xCheck = range(source_x + 1, goal_zone_x)
+                    yCheck = range(source_y + 1, goal_zone_y)
 
                     shotFailed = False
 
