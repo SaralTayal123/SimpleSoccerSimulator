@@ -123,7 +123,7 @@ class Enviornment:
     
     def getGoal(self, team):
         for g in self.listOfGoals:
-            if g.goalTeam != team:
+            if g.goalTeam == team:
                 return g
 
     ####### Player actions #######
