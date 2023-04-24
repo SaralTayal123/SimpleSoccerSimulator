@@ -229,7 +229,8 @@ class State():
         # defining constants to put into newState at the end o
         players_home = copy.deepcopy(self.players_home)
         players_opponent = copy.deepcopy(self.players_opponent)
-        new_value = self.value
+        # new_value = self.value
+        new_value = 0
         new_state_terminal = False
 
         for i, action in enumerate(actions):
@@ -237,16 +238,16 @@ class State():
             other_player = players_home[1-i]
             if action == MacroActions.Up:
                 player.moveUp(NUM_ZONES_X, NUM_ZONES_Y)
-                new_value += -1
+                # new_value += -1
             elif action == MacroActions.Down:
                 player.moveDown(NUM_ZONES_X, NUM_ZONES_Y)
-                new_value += -1
+                # new_value += -1
             elif action == MacroActions.Left:
                 player.moveLeft(NUM_ZONES_X, NUM_ZONES_Y)
-                new_value += -1
+                # new_value += -1
             elif action == MacroActions.Right:
                 player.moveRight(NUM_ZONES_X, NUM_ZONES_Y)
-                new_value += -1
+                # new_value += -1
             elif action == MacroActions.Tackle:
                 # eq to staying in place
                 if player.possession == True:
@@ -287,12 +288,12 @@ class State():
                             break
                     if shotFailed == False:
                         if (self.team != self.agent_team):
-                            new_value += -2 * MAX_DEPTH
-                            # new_value = -1 * np.exp(-1 * self.depth)
+                            new_value = -1 * np.exp(-1 * self.depth)
+                            # new_value += -2 * MAX_DEPTH
                             new_state_terminal = True
                         else:
-                            # new_value = 1 * np.exp(-1 * self.depth)
-                            new_value += 2 * MAX_DEPTH
+                            new_value = 1 * np.exp(-1 * self.depth)
+                            # new_value += 2 * MAX_DEPTH
                             new_state_terminal = True
                     break # continue top loop since pass involves both players
 
@@ -353,7 +354,8 @@ class State():
         new_state.value = new_value
         new_state.terminal = new_state_terminal
         if new_state.depth > MAX_DEPTH:
-            new_state.value = -4 * MAX_DEPTH
+            # new_state.value = -4 * MAX_DEPTH
+            new_state.value = 0
             new_state.terminal = True
         return new_state
 
