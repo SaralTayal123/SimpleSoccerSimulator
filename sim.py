@@ -10,7 +10,7 @@ env = Enviornment()
 # env.init_random_game(2)
 env.init_2player_game()
 
-agent2 = AgentNaive(team=Team.RIGHT)
+agent2 = AgentBharath(team=Team.RIGHT, opp=Team.LEFT)
 agent1 = MacroAgent(team=Team.LEFT)
 
 while(env.gameRunning):

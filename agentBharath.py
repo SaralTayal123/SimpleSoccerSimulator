@@ -130,15 +130,21 @@ class Agent():
                         actions.append([Actions.SHOOT_BALL, player.playerId, []])
                     else:
                         # try to pass
+                        distBetweenPlayers = float('inf')
                         for targetPlayer in players:
-                            if targetPlayer.playerId != player.playerId and env.testPass(player.playerId, targetPlayer.playerId) == None:
-                                actions.append([Actions.PASS_BALL, player.playerId, [targetPlayer.playerId]])
-                                break
+                            if targetPlayer.playerId != player.playerId:
+                                distBetweenPlayers = np.linalg.norm([player.pos_x - targetPlayer.pos_x, player.pos_y - targetPlayer.pos_y], 2)
+                        if distBetweenPlayers > 20:
+                            for targetPlayer in players:
+                                if targetPlayer.playerId != player.playerId and env.testPass(player.playerId, targetPlayer.playerId) == None:
+                                    actions.append([Actions.PASS_BALL, player.playerId, [targetPlayer.playerId]])
+                                    break
                         else:
-                            dir = getActionToDest(player, env.getGoal(self.opponent).get_mid())
+                            dir = getActionToDest(player, env.getGoal(self.team).get_mid())
                             actions.append([Actions.MOVE, player.playerId, [dir]])
                 else:
-                    dir = getActionToDest(player, env.getGoal(self.opponent).get_mid())
+
+                    dir = getActionToDest(player, env.getGoal(self.team).get_mid())
                     actions.append([Actions.MOVE, player.playerId, [dir]])
 
 
@@ -177,7 +183,7 @@ class Agent():
             for player in players:
                 if player == playerClosestToBall:
                     continue
-                distToDefend, closestDefenseSpot = distanceToDefend(player, env.ball, env.getGoal(self.team).get_mid())
+                distToDefend, closestDefenseSpot = distanceToDefend(player, env.ball, env.getGoal(self.opponent).get_mid())
                 if distToDefend < minDistToDefend:
                     distToDefend = minDistToDefend
                     defenseBot = player

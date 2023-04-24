@@ -160,13 +160,18 @@ class Player:
 
     def test_shootToGoal(self, ball, goal, listOfPlayers):
         assert(self.dribble == True)
+        goalMid = goal.pos_y_bottom + (goal.pos_y_top - goal.pos_y_bottom) / 2
+        goalMid = int(goalMid)
+        dist_to_goal = np.sum(np.abs(goal.pos_x - self.pos_x) + np.abs(goalMid - self.pos_y))
+        print(goal.pos_x, goalMid, self.pos_x, self.pos_y)
+        if (dist_to_goal > 60):
+            print("Too far from goal, shot on goal failed")
+            return self
 
         for player in listOfPlayers:
             if player != self:
                 resolution = 1000
                 interpolate_x = np.linspace(self.pos_x, goal.pos_x, resolution)
-                goalMid = goal.pos_y_bottom + (goal.pos_y_top - goal.pos_y_bottom) / 2
-                goalMid = int(goalMid)
                 interpolate_y = np.linspace(self.pos_y, goalMid, resolution)
                 for i in range(resolution):
                     distance = np.linalg.norm([interpolate_x[i] - player.pos_x, interpolate_y[i] - player.pos_y], 2)

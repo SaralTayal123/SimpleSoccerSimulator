@@ -10,6 +10,40 @@ import numpy as np
 from macroAgentHelper import *
 from macroMCTS import *
 
+def getActionMinimizingDistanceToBall(player, ball):
+    '''
+    Returns the action that minimizes the distance to the ball
+    '''
+    playerPos_x = player.pos_x
+    playerPos_y = player.pos_y
+
+    ballPos_x = ball.pos_x
+    ballPos_y = ball.pos_y
+
+    distanceCurr = np.linalg.norm([ballPos_x - playerPos_x, ballPos_y - playerPos_y], 2)
+
+    # test all actions
+    actions = [Movement.UP, Movement.DOWN, Movement.LEFT, Movement.RIGHT]
+    distances = []
+
+    for action in actions:
+        new_x, new_y = playerPos_x, playerPos_y
+        if action == Movement.UP:
+            new_y -= 1
+        elif action == Movement.DOWN:
+            new_y += 1
+        elif action == Movement.LEFT:
+            new_x -= 1
+        elif action == Movement.RIGHT:
+            new_x += 1
+        
+        distance = np.linalg.norm([ballPos_x - new_x, ballPos_y - new_y], 2)
+        distances.append(distance)
+    
+    bestAction = actions[np.argmin(distances)]
+
+    return bestAction
+
 class Agent():
     def __init__(self, team) -> None:
         self.team = team
@@ -91,6 +125,16 @@ class Agent():
         actions = []
         for i, action in enumerate(self.curr_action):
             curr_player = players_home[i]
+            if (env.testTackle(curr_player.playerId, self.team)):
+               # greedily tackle if possible
+               actions.append([Actions.TACKLE_BALL, curr_player.playerId, []]) 
+               continue
+            dist_to_ball = np.linalg.norm([curr_player.pos_x - env.getBallPosition()[0], curr_player.pos_y - env.getBallPosition()[1]], 2)
+            if dist_to_ball < 5:
+                # greedily go to ball if possible
+                go_to_ball_action = getActionMinimizingDistanceToBall(curr_player, env)
+                actions.append([Actions.MOVE, curr_player.playerId, [go_to_ball_action]])
+                continue
             if action == MacroActions.Up:
                 actions.append([Actions.MOVE, curr_player.playerId, [Movement.UP]])
             elif action == MacroActions.Down:

@@ -89,10 +89,14 @@ class State():
             if player.possession == True:
                 source_x = player.x
                 source_y = player.y
-                goal_x = self.env.getGoal(self.oppositeTeam).get_mid()[0]
-                goal_y = self.env.getGoal(self.oppositeTeam).get_mid()[1]
+                goal_x = self.env.getGoal(self.team).get_mid()[0]
+                goal_y = self.env.getGoal(self.team).get_mid()[1]
                 goal_zone_x = int((goal_x / self.env.dim_x) * NUM_ZONES_X)
                 goal_zone_y = int((goal_y / self.env.dim_y) * NUM_ZONES_Y)
+
+                manhattan_to_goal = np.sum(np.abs(goal_zone_y - source_y) + np.abs(goal_zone_x - source_x))
+                if manhattan_to_goal > 3:
+                    return False
 
                 xCheck = range(source_x + 1, goal_zone_x)
                 yCheck = range(source_y + 1, goal_zone_y)
@@ -164,7 +168,7 @@ class State():
                 values[MacroActions.Pass.value] = 0
                 values[MacroActions.Tackle.value] = 0
                 values[MacroActions.Shoot.value] = 1000
-                (_, goal_mid_y) = self.env.getGoal(self.oppositeTeam).get_mid()
+                (_, goal_mid_y) = self.env.getGoal(self.team).get_mid()
                 goal_zone_y = int((goal_mid_y / self.env.dim_y) * NUM_ZONES_Y)
                 if agent.y < goal_zone_y:
                     values[MacroActions.Up.value] = 0
@@ -269,8 +273,8 @@ class State():
                 if player.possession == True:
                     source_x = player.x
                     source_y = player.y
-                    goal_x = self.env.getGoal(self.oppositeTeam).get_mid()[0]
-                    goal_y = self.env.getGoal(self.oppositeTeam).get_mid()[1]
+                    goal_x = self.env.getGoal(self.team).get_mid()[0]
+                    goal_y = self.env.getGoal(self.team).get_mid()[1]
                     goal_zone_x = int((goal_x / self.env.dim_x) * NUM_ZONES_X)
                     goal_zone_y = int((goal_y / self.env.dim_y) * NUM_ZONES_Y)
 
