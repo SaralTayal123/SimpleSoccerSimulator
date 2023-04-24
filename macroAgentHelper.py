@@ -163,10 +163,11 @@ class State():
                 values[MacroActions.Tackle.value] = 0
                 values[MacroActions.Shoot.value] = 1000
                 (_, goal_mid_y) = self.env.getGoal(self.oppositeTeam).get_mid()
-                if agent.y < goal_mid_y:
+                goal_zone_y = int((goal_mid_y / self.env.dim_y) * NUM_ZONES_Y)
+                if agent.y < goal_zone_y:
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 10
-                elif agent.y > goal_mid_y:
+                elif agent.y > goal_zone_y:
                     values[MacroActions.Up.value] = 10
                     values[MacroActions.Down.value] = 0
                 else:
@@ -184,27 +185,29 @@ class State():
                 values[MacroActions.Tackle.value] = 1000
                 values[MacroActions.Shoot.value] = 0
                 (ball_x, ball_y) = self.env.getBallPosition()
-                if agent.x < ball_x:
+                ball_zone_x = int((ball_x / self.env.dim_x) * NUM_ZONES_X)
+                ball_zone_y = int((ball_y / self.env.dim_y) * NUM_ZONES_Y)
+                if agent.x < ball_zone_x:
                     values[MacroActions.Right.value] = 10
                     values[MacroActions.Left.value] = 0
-                elif agent.x > ball_x:
+                elif agent.x > ball_zone_x:
                     values[MacroActions.Right.value] = 0
                     values[MacroActions.Left.value] = 10
                 else:
                     values[MacroActions.Right.value] = 0
                     values[MacroActions.Left.value] = 0
 
-                if agent.y < ball_y:
+                if agent.y < ball_zone_y:
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 10
-                elif agent.y > ball_y:
+                elif agent.y > ball_zone_y:
                     values[MacroActions.Up.value] = 10
                     values[MacroActions.Down.value] = 0
                 else:
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 0
             
-            exploration_tendency = 10
+            exploration_tendency = 1
             for action in MacroActions:
                 if self.testLegality(action, agent):
                     values[action.value] += exploration_tendency
@@ -213,7 +216,7 @@ class State():
 
             actionList.append(random.choices([action for action in MacroActions], \
                                              weights=values[1:], k=1)[0])
-        
+
         return actionList
 
     def getNextState(self, actions : list[MacroActions]):
