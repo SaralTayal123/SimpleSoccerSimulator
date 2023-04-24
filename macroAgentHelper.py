@@ -10,7 +10,9 @@ NUM_ZONES_X = 50
 NUM_ZONES_Y = 25
 
 NUM_PLAYERS = 2
-MAX_DEPTH = 200
+MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 4
+VALUE_OF_TIME = 10
+EXPLORATION_TENDENCY = 2
 
 class MacroActions(Enum):
     Up = 1
@@ -213,10 +215,9 @@ class State():
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 0
             
-            exploration_tendency = 1
             for action in MacroActions:
                 if self.testLegality(action, agent):
-                    values[action.value] += exploration_tendency
+                    values[action.value] += EXPLORATION_TENDENCY
                 else:
                     values[action.value] = 0
 
@@ -296,11 +297,11 @@ class State():
                             break
                     if shotFailed == False:
                         if (self.team != self.agent_team):
-                            new_value = -1 * np.exp(-1 * self.depth)
+                            new_value = -1 * np.exp(-1 * self.depth / MAX_DEPTH * VALUE_OF_TIME)
                             # new_value += -2 * MAX_DEPTH
                             new_state_terminal = True
                         else:
-                            new_value = 1 * np.exp(-1 * self.depth)
+                            new_value = 1 * np.exp(-1 * self.depth / MAX_DEPTH * VALUE_OF_TIME)
                             # new_value += 2 * MAX_DEPTH
                             new_state_terminal = True
                     break # continue top loop since pass involves both players
