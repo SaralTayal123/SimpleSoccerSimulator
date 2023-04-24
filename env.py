@@ -110,7 +110,7 @@ class Enviornment:
     def testShoot(self, playerId, team):
         goal = None
         for g in self.listOfGoals:
-            if g.goalTeam != team:
+            if g.goalTeam == team:
                 goal = g
                 break
         
@@ -135,7 +135,7 @@ class Enviornment:
         player = self.listOfPlayers[playerID]
         goal = None
         for g in self.listOfGoals:
-            if g.goalTeam != player.playerTeam:
+            if g.goalTeam == player.playerTeam:
                 goal = g
                 break
         

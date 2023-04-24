@@ -156,7 +156,7 @@ class State():
             for action2 in MacroActions:
                 if not self.testLegality(action2, self.players_home[1]):
                     continue
-                if action == MacroActions.Pass and action2 != MacroActions.Pass or action != MacroActions.Pass and action2 == MacroActions.Pass:
+                if (action == MacroActions.Pass and action2 != MacroActions.Pass) or (action != MacroActions.Pass and action2 == MacroActions.Pass):
                     continue
                 allActions.append([action, action2])
 

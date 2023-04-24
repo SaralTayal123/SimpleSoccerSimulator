@@ -132,7 +132,7 @@ class Agent():
             dist_to_ball = np.linalg.norm([curr_player.pos_x - env.getBallPosition()[0], curr_player.pos_y - env.getBallPosition()[1]], 2)
             if dist_to_ball < 5:
                 # greedily go to ball if possible
-                go_to_ball_action = getActionMinimizingDistanceToBall(curr_player, env)
+                go_to_ball_action = getActionMinimizingDistanceToBall(curr_player, env.ball)
                 actions.append([Actions.MOVE, curr_player.playerId, [go_to_ball_action]])
                 continue
             if action == MacroActions.Up:

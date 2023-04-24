@@ -67,9 +67,9 @@ class Player:
 
     def tackleBall(self, ball, listOfPlayers):
         if self.test_tackleBall(ball, listOfPlayers):
-            tackleSuccess = np.random.getrandbits(1)
+            tackleSuccess = np.random.randint(0,2)
             if tackleSuccess:
-                listOfPlayers[ball.playerHost].dribble = False
+                listOfPlayers[ball.playerId].dribble = False
                 ball.playerId = self.playerId
                 self.dribble = True
 
