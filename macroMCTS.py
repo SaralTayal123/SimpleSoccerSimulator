@@ -43,7 +43,7 @@ class MCTSState():
         return MCTSState(self.game_state.getNextState([action.game_action]))
 
     def isTerminal(self):
-        return self.game_state.value is not None
+        return self.game_state.terminal
 
     def getReward(self):
         # only needed for terminal states
@@ -52,18 +52,20 @@ class MCTSState():
     def __eq__(self, other):
         return self.game_state == other.game_state
 
-def defaultPolicy(state : MCTSState):
+def heuristicPolicy(state : MCTSState):
+    print("START OF ROLLOUT")
     while not state.isTerminal():
-        try:
-            action = random.choice(state.getPossibleActions())
-        except IndexError:
-            raise Exception("Non-terminal state has no possible actions: " + str(state))
+        action = MCTSAction(state.game_state.getHeuristicAction())
         state = state.takeAction(action)
+        print("taking action: " + action.to_string())
+        state.game_state.print_state()
+    print("END OF ROLLOUT")
     return state.getReward()
 
 class MCTSSearcher:
     def __init__(self, time_limit_ms, exploration_constant=(1 / math.sqrt(2))):
-        self.searcher = mcts(timeLimit=time_limit_ms, explorationConstant=exploration_constant)
+        self.searcher = mcts(timeLimit=time_limit_ms, explorationConstant=exploration_constant, \
+                             rolloutPolicy=heuristicPolicy)
 
     def search(self, initial_game_state, debug_print=True):
         mcts_state = MCTSState(initial_game_state)

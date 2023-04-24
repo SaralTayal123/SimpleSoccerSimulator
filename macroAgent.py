@@ -52,7 +52,7 @@ class Agent():
 
         players_home = env.getPlayers(self.team)
 
-        if (self.curr_action == None or self.time_taken_for_curr >= 100):
+        if (self.curr_action == None or self.time_taken_for_curr >= 20):
             oppositeTeam = Team.LEFT
             if self.team == Team.LEFT:
                 oppositeTeam = Team.RIGHT
@@ -77,10 +77,10 @@ class Agent():
 
 
             stateInit = State(depth = 0, agent_team = self.team, team = self.team, players_home = macro_players_home, players_opponent = macro_players_opp, env = env)
-            stateInit.print_state()
+            # stateInit.print_state()
 
 
-            mctsSearcher = MCTSSearcher(100)
+            mctsSearcher = MCTSSearcher(500)
             macro_action = mctsSearcher.search(stateInit, debug_print=True)
             print("action: ")
             print(macro_action.game_action)

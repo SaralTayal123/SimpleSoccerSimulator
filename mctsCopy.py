@@ -13,6 +13,8 @@ def randomPolicy(state):
             raise Exception("Non-terminal state has no possible actions: " + str(state))
         state = state.takeAction(action)
         # state.game_state.print_state()
+    if (state.game_state.depth < 100):
+        state.game_state.print_state()
     return state.getReward()
 
 class treeNode():
@@ -64,7 +66,7 @@ class mcts():
             for i in range(self.searchLimit):
                 self.executeRound()
 
-        print(self.root)
+        # print(self.root)
         bestChild = self.getBestChild(self.root, 0)
         action=(action for action, node in self.root.children.items() if node is bestChild).__next__()
         if needDetails:
