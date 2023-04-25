@@ -28,7 +28,7 @@ class MCTSState():
         else:
             return -1
 
-    def getPossibleActions(self) -> list[MCTSAction]:
+    def getPossibleActions(self):
         game_action_list = self.game_state.getPossibleActions()
         # print("Pre ")
         # print(game_action_list)
