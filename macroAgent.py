@@ -113,9 +113,9 @@ class Agent():
             stateInit = State(depth = 0, agent_team = self.team, team = self.team, players_home = macro_players_home, players_opponent = macro_players_opp, env = env)
             # stateInit.print_state()
 
-            mctsSearcher = MCTSSearcher(1000)
-            macro_action = mctsSearcher.search(stateInit, debug_print=True)
-            # macro_action = MCTSAction(stateInit.getHeuristicAction())
+            # mctsSearcher = MCTSSearcher(1000)
+            # macro_action = mctsSearcher.search(stateInit, debug_print=True)
+            macro_action = MCTSAction(stateInit.getHeuristicAction())
             print("action: ")
             print(macro_action.game_action)
             self.curr_action = macro_action.game_action
