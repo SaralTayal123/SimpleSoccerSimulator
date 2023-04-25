@@ -6,13 +6,13 @@ import numpy as np
 import random
 from collections import defaultdict
 
-NUM_ZONES_X = 50
-NUM_ZONES_Y = 25
+NUM_ZONES_X = 10
+NUM_ZONES_Y = 5
 
 NUM_PLAYERS = 2
 MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 4
 VALUE_OF_TIME = 10
-EXPLORATION_TENDENCY = 1
+EXPLORATION_TENDENCY = 10
 
 class MacroActions(Enum):
     Up = 1
@@ -229,8 +229,8 @@ class State():
                 else:
                     values[action.value] = 0
 
-            values[MacroActions.Pass.value] = 0
-            
+            # values[MacroActions.Pass.value] = 0
+
             actionList.append(random.choices([action for action in MacroActions], \
                                              weights=values[1:], k=1)[0])
 

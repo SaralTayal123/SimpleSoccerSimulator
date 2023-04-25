@@ -10,8 +10,8 @@ class Enviornment:
         self.ball = None
         self.gameRunning = True
 
-        self.dim_x = 1000
-        self.dim_y = 500
+        self.dim_x = 200
+        self.dim_y = 100
 
     def _init_ballAndGoals(self):
         # create goals
@@ -46,15 +46,15 @@ class Enviornment:
         self.numPlayers = 2
 
         # create players
-        x_1 = int(self.dim_x/2) - 200
-        x_2 = int(self.dim_x/2) + 200
-        y_1 = int(self.dim_y/2) - 200
-        y_2 = int(self.dim_y/2) + 200
+        x_1 = int(self.dim_x/2) - 40
+        x_2 = int(self.dim_x/2) + 40
+        y_1 = int(self.dim_y/2) - 40
+        y_2 = int(self.dim_y/2) + 40
 
         self.listOfPlayers.append(Player(x_1, y_1, 0, Team.LEFT))
         self.listOfPlayers.append(Player(x_1, y_2, 1, Team.LEFT))
-        self.listOfPlayers.append(Player(x_2+200, y_1, 2, Team.RIGHT))
-        self.listOfPlayers.append(Player(x_2+200, y_2, 3, Team.RIGHT))
+        self.listOfPlayers.append(Player(x_2+40, y_1, 2, Team.RIGHT))
+        self.listOfPlayers.append(Player(x_2+40, y_2, 3, Team.RIGHT))
         
         self._init_ballAndGoals()
 
