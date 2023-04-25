@@ -73,15 +73,27 @@ class State():
         if action == MacroActions.Up:
             if player.y <= 0:
                 return False
+            for opponent in self.players_opponent:
+                if opponent.y == player.y - 1 and player.x == opponent.x:
+                    return False
         elif action == MacroActions.Down:
             if player.y >= NUM_ZONES_Y - 1:
                 return False
+            for opponent in self.players_opponent:
+                if opponent.y == player.y + 1 and player.x == opponent.x:
+                    return False
         elif action == MacroActions.Left:
             if player.x <= 0:
                 return False
+            for opponent in self.players_opponent:
+                if opponent.y == player.y and player.x - 1 == opponent.x:
+                    return False
         elif action == MacroActions.Right:
             if player.x >= NUM_ZONES_X - 1:
                 return False
+            for opponent in self.players_opponent:
+                if opponent.y == player.y and player.x + 1 == opponent.x:
+                    return False
         elif action == MacroActions.Tackle:
             ballZoneX = int((self.env.getBallPosition()[0] / self.env.dim_x) * NUM_ZONES_X)
             ballZoneY = int((self.env.getBallPosition()[1] / self.env.dim_y) * NUM_ZONES_Y)
