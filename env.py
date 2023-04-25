@@ -53,8 +53,8 @@ class Enviornment:
 
         self.listOfPlayers.append(Player(x_1, y_1, 0, Team.LEFT))
         self.listOfPlayers.append(Player(x_1, y_2, 1, Team.LEFT))
-        self.listOfPlayers.append(Player(x_2+3, y_1, 2, Team.RIGHT))
-        self.listOfPlayers.append(Player(x_2+3, y_2, 3, Team.RIGHT))
+        self.listOfPlayers.append(Player(x_2, y_1, 2, Team.RIGHT))
+        self.listOfPlayers.append(Player(x_2, y_2, 3, Team.RIGHT))
         
         self._init_ballAndGoals()
 
