@@ -10,16 +10,16 @@ class Enviornment:
         self.ball = None
         self.gameRunning = True
 
-        self.dim_x = 200
-        self.dim_y = 100
+        self.dim_x = 20
+        self.dim_y = 10
 
     def _init_ballAndGoals(self):
         # create goals
         mid_y = int(self.dim_y/2)
-        top_y = mid_y + 100
-        bottom_y = mid_y - 100
+        top_y = mid_y + 3
+        bottom_y = mid_y - 3
         goal1 = Goal(bottom_y, top_y, 0, Team.RIGHT)
-        goal2 = Goal(bottom_y, top_y, self.dim_x - 10, Team.LEFT)
+        goal2 = Goal(bottom_y, top_y, self.dim_x-1, Team.LEFT)
 
         self.listOfGoals.append(goal1)
         self.listOfGoals.append(goal2)
@@ -46,32 +46,34 @@ class Enviornment:
         self.numPlayers = 2
 
         # create players
-        x_1 = int(self.dim_x/2) - 40
-        x_2 = int(self.dim_x/2) + 40
-        y_1 = int(self.dim_y/2) - 40
-        y_2 = int(self.dim_y/2) + 40
+        x_1 = int(self.dim_x/2) - 5
+        x_2 = int(self.dim_x/2) + 5
+        y_1 = int(self.dim_y/2) - 3
+        y_2 = int(self.dim_y/2) + 3
 
         self.listOfPlayers.append(Player(x_1, y_1, 0, Team.LEFT))
         self.listOfPlayers.append(Player(x_1, y_2, 1, Team.LEFT))
-        self.listOfPlayers.append(Player(x_2+40, y_1, 2, Team.RIGHT))
-        self.listOfPlayers.append(Player(x_2+40, y_2, 3, Team.RIGHT))
+        self.listOfPlayers.append(Player(x_2+3, y_1, 2, Team.RIGHT))
+        self.listOfPlayers.append(Player(x_2+3, y_2, 3, Team.RIGHT))
         
         self._init_ballAndGoals()
 
 
     def drawEnviornment(self, time):
-        img = np.zeros((self.dim_y, self.dim_x, 3), np.uint8)
+
+        scale = 10
+        img = np.zeros((self.dim_y * scale, self.dim_x * scale, 3), np.uint8)
 
         for player in self.listOfPlayers:
             if player.playerTeam == Team.RIGHT:
-                cv.circle(img, (player.pos_x, player.pos_y), 5, (0, 0, 255), -1)
+                cv.circle(img, (player.pos_x * scale, player.pos_y * scale), 5, (0, 0, 255), -1)
             else:
-                cv.circle(img, (player.pos_x, player.pos_y), 5, (255, 0, 0), -1)
+                cv.circle(img, (player.pos_x*scale, player.pos_y*scale), 5, (255, 0, 0), -1)
 
         for goal in self.listOfGoals:
-            cv.rectangle(img, (goal.pos_x, goal.pos_y_top), (goal.pos_x + 10, goal.pos_y_bottom), (0, 255, 0), -1)
+            cv.rectangle(img, (goal.pos_x*scale, goal.pos_y_top*scale), ((goal.pos_x + 1)*scale, goal.pos_y_bottom*scale), (0, 255, 0), -1)
 
-        cv.circle(img, (self.ball.pos_x, self.ball.pos_y), 2, (255, 255, 255), -1)
+        cv.circle(img, (self.ball.pos_x*scale, self.ball.pos_y*scale), 2, (255, 255, 255), -1)
         cv.imshow("game", img)
         cv.waitKey(time)
 
@@ -119,6 +121,8 @@ class Enviornment:
         return self.listOfPlayers[playerId].test_shootToGoal(self.ball, goal, self.listOfPlayers)
 
     def testTackle(self, playerId, team):
+        if team == self.getBallOwnerTeam():
+            return False
         return self.listOfPlayers[playerId].test_tackleBall(self.ball, self.listOfPlayers)
     
     def getGoal(self, team):

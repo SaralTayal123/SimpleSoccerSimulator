@@ -1,6 +1,8 @@
 import numpy as np
 from enum import Enum
 
+SHOOT_L1_RANGE = 2
+
 class Actions(Enum):
     MOVE = 0
     PASS_BALL = 4
@@ -50,7 +52,7 @@ class Player:
 
     def captureBall(self, ball):
         distToBall = np.linalg.norm([ball.pos_x - self.pos_x, ball.pos_y - self.pos_y], 2)
-        if distToBall < 5 and self.dribble == False and ball.captured == False:
+        if distToBall < 2 and self.dribble == False and ball.captured == False:
             self.dribble = True
             ball.captured = True
             ball.playerId = self.playerId
@@ -58,17 +60,18 @@ class Player:
     def test_tackleBall(self, ball, listOfPlayers):
         if self.dribble == True:
             return False
-
+        
         distanceToBall = np.linalg.norm([ball.pos_x - self.pos_x, ball.pos_y - self.pos_y], 2)
 
-        if distanceToBall < 5:
+        if distanceToBall <= 2:
             return True
         return False
 
     def tackleBall(self, ball, listOfPlayers):
         if self.test_tackleBall(ball, listOfPlayers):
-            tackleSuccess = np.random.randint(0,2)
+            tackleSuccess = np.random.randint(0,10) < 2
             if tackleSuccess:
+                # print("Tackle success!")
                 listOfPlayers[ball.playerId].dribble = False
                 ball.playerId = self.playerId
                 self.dribble = True
@@ -123,15 +126,15 @@ class Player:
         # distance = min(np.abs(dist_x), np.abs(dist_y)) * np.sqrt(2) + max(np.abs(dist_x), np.abs(dist_y)) - min(np.abs(dist_x), np.abs(dist_y))
 
         # loop through all the players and see how close they are to the ball along the entire path
-        for player in listOfPlayers:
-            if player != self and player != destPlayer:
-                resolution = 100
-                interpolate_x = np.linspace(source_x, dest_x, resolution)
-                interpolate_y = np.linspace(source_y, dest_y, resolution)
-                for i in range(resolution):
-                    distance = np.linalg.norm([interpolate_x[i] - player.pos_x, interpolate_y[i] - player.pos_y], 2)
-                    if distance < 5:
-                        return player
+        # for player in listOfPlayers:
+        #     if player != self and player != destPlayer:
+        #         resolution = 100
+        #         interpolate_x = np.linspace(source_x, dest_x, resolution)
+        #         interpolate_y = np.linspace(source_y, dest_y, resolution)
+        #         for i in range(resolution):
+        #             distance = np.linalg.norm([interpolate_x[i] - player.pos_x, interpolate_y[i] - player.pos_y], 2)
+        #             if distance <= 1:
+        #                 return player
         return None
     
     def passBall(self, ball, destPlayer, listOfPlayers):
@@ -164,34 +167,37 @@ class Player:
         goalMid = int(goalMid)
         dist_to_goal = np.sum(np.abs(goal.pos_x - self.pos_x) + np.abs(goalMid - self.pos_y))
         print(goal.pos_x, goalMid, self.pos_x, self.pos_y)
-        if (dist_to_goal > 60):
-            print("Too far from goal, shot on goal failed")
+        if (dist_to_goal > SHOOT_L1_RANGE):
+            # print("Too far from goal, shot on goal failed")
             return self
 
         for player in listOfPlayers:
-            if player != self:
+            if player != self and player.playerTeam != self.playerTeam:
                 resolution = 1000
                 interpolate_x = np.linspace(self.pos_x, goal.pos_x, resolution)
                 interpolate_y = np.linspace(self.pos_y, goalMid, resolution)
                 for i in range(resolution):
                     distance = np.linalg.norm([interpolate_x[i] - player.pos_x, interpolate_y[i] - player.pos_y], 2)
-                    if distance < 5:
-                        print("Player in the way, shot on goal failed")
+                    if distance <= 1:
+                        # print("Player in the way, shot on goal failed")
                         return player
         
         # pass worked
         return None
 
     def shootToGoal(self, ball, goal, listOfPlayers):
+        print("Shooting to goal from player " + str(self.playerId), self.pos_x, self.pos_y, self.playerTeam)
+        print("Ball owner", ball.playerId, ball.pos_x, ball.pos_y)
         assert(self.dribble == True)
 
         playerIntercept = self.test_shootToGoal(ball, goal, listOfPlayers)
 
-        # pass failed
+        # shot failed
         if playerIntercept != None:
             playerIntercept.dribble = True
             ball.playerId = playerIntercept.playerId
             self.dribble = False
+            print("Shot failed", playerIntercept.playerId)
             return False
 
         # pass worked, end round

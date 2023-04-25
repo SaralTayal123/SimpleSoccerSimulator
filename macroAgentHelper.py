@@ -6,13 +6,14 @@ import numpy as np
 import random
 from collections import defaultdict
 
-NUM_ZONES_X = 10
-NUM_ZONES_Y = 5
+NUM_ZONES_X = 20
+NUM_ZONES_Y = 10
+MACRO_SHOOT_L1_RANGE = 2
 
 NUM_PLAYERS = 2
-MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 4
+MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 2 * 5
 VALUE_OF_TIME = 10
-EXPLORATION_TENDENCY = 10
+EXPLORATION_TENDENCY = 2
 
 class MacroActions(Enum):
     Up = 1
@@ -70,24 +71,26 @@ class State():
         
     def testLegality(self, action, player):
         if action == MacroActions.Up:
-            if player.y == 0:
+            if player.y <= 0:
                 return False
         elif action == MacroActions.Down:
-            if player.y == NUM_ZONES_Y - 1:
+            if player.y >= NUM_ZONES_Y - 1:
                 return False
         elif action == MacroActions.Left:
-            if player.x == 0:
+            if player.x <= 0:
                 return False
         elif action == MacroActions.Right:
-            if player.x == NUM_ZONES_X - 1:
+            if player.x >= NUM_ZONES_X - 1:
                 return False
         elif action == MacroActions.Tackle:
             ballZoneX = int((self.env.getBallPosition()[0] / self.env.dim_x) * NUM_ZONES_X)
             ballZoneY = int((self.env.getBallPosition()[1] / self.env.dim_y) * NUM_ZONES_Y)
 
-            if not (ballZoneX == player.x and ballZoneY == player.y):
+            dist_to_ball = np.linalg.norm([ballZoneY - player.y, ballZoneX - player.x], 2)
+
+            if dist_to_ball > 2:
                 return False
-            
+
             for team_player in self.players_home:
                 if team_player.possession:
                     return False
@@ -105,11 +108,11 @@ class State():
                 goal_zone_y = int((goal_y / self.env.dim_y) * NUM_ZONES_Y)
 
                 manhattan_to_goal = np.sum(np.abs(goal_zone_y - source_y) + np.abs(goal_zone_x - source_x))
-                if manhattan_to_goal > 3:
+                if manhattan_to_goal > MACRO_SHOOT_L1_RANGE:
                     return False
 
-                xCheck = range(source_x + 1, goal_zone_x)
-                yCheck = range(source_y + 1, goal_zone_y)
+                xCheck = range(source_x, goal_zone_x)
+                yCheck = range(source_y, goal_zone_y)
 
                 for opponent_player in self.players_opponent:
                     dest_x = opponent_player.x
@@ -117,20 +120,26 @@ class State():
 
                     if dest_x in xCheck and dest_y in yCheck:
                         # shot fails
-                        player.possession = False
-                        opponent_player.possession = True
+                        return False
+                for friend in self.players_home:
+                    dest_x = friend.x
+                    dest_y = friend.y
+
+                    if dest_x in xCheck and dest_y in yCheck:
+                        # shot fails
                         return False
             else:
                 return False
         elif action == MacroActions.Pass:
+            return True
             player1 = self.players_home[0]
             player2 = self.players_home[1]
-            if player1.possession == True:
+            if player == player1 and player1.possession == True:
                 source_x = player1.x
                 source_y = player1.y
                 pass_x = player2.x
                 pass_y = player2.y
-            elif player2.possession == True:
+            elif player == player2 and player2.possession == True:
                 source_x = player2.x
                 source_y = player2.y
                 pass_x = player1.x
@@ -145,12 +154,11 @@ class State():
                 dest_x = opponent_player.x
                 dest_y = opponent_player.y
 
-
                 if dest_x in xCheck and dest_y in yCheck:
                     # pass fails
-                    player.possession = False
-                    opponent_player.possession = True
                     return False
+        else:
+            raise Exception("invalid macro action!")
 
         return True
 
@@ -164,20 +172,27 @@ class State():
             for action2 in MacroActions:
                 if not self.testLegality(action2, self.players_home[1]):
                     continue
-                if (action == MacroActions.Pass and action2 != MacroActions.Pass) or (action != MacroActions.Pass and action2 == MacroActions.Pass):
-                    continue
                 allActions.append([action, action2])
 
         return allActions
 
     def getHeuristicAction(self) -> list[MacroActions]:
         actionList = []
+        teamPossession = False
         for agent in self.players_home:
+            if agent.possession:
+                teamPossession = True
+
+        for agent in self.players_home:
+            otherAgent = None
+            for test in self.players_home:
+                if test != agent:
+                    otherAgent = test
+                    break
             values = [0 for _ in range(len(MacroActions)+1)]
             if agent.possession:
-                values[MacroActions.Pass.value] = 0
                 values[MacroActions.Tackle.value] = 0
-                values[MacroActions.Shoot.value] = 1000
+                values[MacroActions.Shoot.value] = 10000
                 (_, goal_mid_y) = self.env.getGoal(self.team).get_mid()
                 goal_zone_y = int((goal_mid_y / self.env.dim_y) * NUM_ZONES_Y)
                 if agent.y < goal_zone_y:
@@ -190,46 +205,102 @@ class State():
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 0
 
+                values[MacroActions.Pass.value] = 0
                 if self.agent_team == Team.LEFT:
                     values[MacroActions.Left.value] = 0
                     values[MacroActions.Right.value] = 10
-                else:
-                    values[MacroActions.Left.value] = 10
-                    values[MacroActions.Right.value] = 0
-            else:
-                values[MacroActions.Pass.value] = 0
-                values[MacroActions.Tackle.value] = 1000
-                values[MacroActions.Shoot.value] = 0
-                (ball_x, ball_y) = self.env.getBallPosition()
-                ball_zone_x = int((ball_x / self.env.dim_x) * NUM_ZONES_X)
-                ball_zone_y = int((ball_y / self.env.dim_y) * NUM_ZONES_Y)
-                if agent.x < ball_zone_x:
-                    values[MacroActions.Right.value] = 10
-                    values[MacroActions.Left.value] = 0
-                elif agent.x > ball_zone_x:
-                    values[MacroActions.Right.value] = 0
-                    values[MacroActions.Left.value] = 10
-                else:
-                    values[MacroActions.Right.value] = 0
-                    values[MacroActions.Left.value] = 0
 
-                if agent.y < ball_zone_y:
-                    values[MacroActions.Up.value] = 0
-                    values[MacroActions.Down.value] = 10
-                elif agent.y > ball_zone_y:
-                    values[MacroActions.Up.value] = 10
-                    values[MacroActions.Down.value] = 0
+                    for teammate in self.players_home:
+                        dist_to_teammate = np.linalg.norm([teammate.x - agent.x, teammate.y - agent.y], 2)
+                        if dist_to_teammate > 3:
+                            values[MacroActions.Pass.value] = 100
+                        if teammate.x > agent.x:
+                            values[MacroActions.Pass.value] *= 10
+                            break
                 else:
-                    values[MacroActions.Up.value] = 0
-                    values[MacroActions.Down.value] = 0
+                    values[MacroActions.Left.value] = 10
+                    values[MacroActions.Right.value] = 0
+
+                    for teammate in self.players_opponent:
+                        dist_to_teammate = np.linalg.norm([teammate.x - agent.x, teammate.y - agent.y], 2)
+                        if dist_to_teammate > 3:
+                            values[MacroActions.Pass.value] = 100
+                        if teammate.x < agent.x:
+                            values[MacroActions.Pass.value] *= 10
+                            break
+            else:
+                # I don't have the ball
+                values[MacroActions.Pass.value] = 0
+                values[MacroActions.Shoot.value] = 0
+
+                if teamPossession:
+                    # move to goal
+                    values[MacroActions.Tackle.value] = 0
+                    (_, goal_mid_y) = self.env.getGoal(self.team).get_mid()
+                    goal_zone_y = int((goal_mid_y / self.env.dim_y) * NUM_ZONES_Y)
+                    if agent.y < goal_zone_y:
+                        values[MacroActions.Up.value] = 0
+                        values[MacroActions.Down.value] = 10
+                    elif agent.y > goal_zone_y:
+                        values[MacroActions.Up.value] = 10
+                        values[MacroActions.Down.value] = 0
+                    else:
+                        values[MacroActions.Up.value] = 0
+                        values[MacroActions.Down.value] = 0
+
+                    if self.agent_team == Team.LEFT:
+                        values[MacroActions.Left.value] = 0
+                        values[MacroActions.Right.value] = 10
+                    else:
+                        values[MacroActions.Left.value] = 10
+                        values[MacroActions.Right.value] = 0
+
+                    # move away from teammate
+                    if agent.x < otherAgent.x:
+                        values[MacroActions.Left.value] *= 5
+                        values[MacroActions.Left.value] += 10
+                    else:
+                        values[MacroActions.Right.value] *= 5
+                        values[MacroActions.Right.value] += 10
+
+                    if agent.y < otherAgent.y:
+                        values[MacroActions.Up.value] *= 5
+                        values[MacroActions.Up.value] += 10
+                    else:
+                        values[MacroActions.Down.value] *= 5
+                        values[MacroActions.Down.value] += 10
+                else:
+                    # move to ball
+                    values[MacroActions.Tackle.value] = 1000
+                    
+                    (ball_x, ball_y) = self.env.getBallPosition()
+                    ball_zone_x = int((ball_x / self.env.dim_x) * NUM_ZONES_X)
+                    ball_zone_y = int((ball_y / self.env.dim_y) * NUM_ZONES_Y)
+                    if agent.x < ball_zone_x:
+                        values[MacroActions.Right.value] = 10
+                        values[MacroActions.Left.value] = 0
+                    elif agent.x > ball_zone_x:
+                        values[MacroActions.Right.value] = 0
+                        values[MacroActions.Left.value] = 10
+                    else:
+                        values[MacroActions.Right.value] = 0
+                        values[MacroActions.Left.value] = 0
+
+                    if agent.y < ball_zone_y:
+                        values[MacroActions.Up.value] = 0
+                        values[MacroActions.Down.value] = 10
+                    elif agent.y > ball_zone_y:
+                        values[MacroActions.Up.value] = 10
+                        values[MacroActions.Down.value] = 0
+                    else:
+                        values[MacroActions.Up.value] = 0
+                        values[MacroActions.Down.value] = 0
             
             for action in MacroActions:
                 if self.testLegality(action, agent):
                     values[action.value] += EXPLORATION_TENDENCY
                 else:
                     values[action.value] = 0
-
-            # values[MacroActions.Pass.value] = 0
 
             actionList.append(random.choices([action for action in MacroActions], \
                                              weights=values[1:], k=1)[0])
