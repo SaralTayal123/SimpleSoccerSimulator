@@ -88,14 +88,13 @@ class State():
             if not (ballZoneX == player.x and ballZoneY == player.y):
                 return False
             
-            if player in self.players_home:
-                for team_player in self.players_home:
-                    if team_player.possession:
-                        return False
-            else:
-                for team_player in self.players_opponent:
-                    if team_player.possession:
-                        return False
+            for team_player in self.players_home:
+                if team_player.possession:
+                    return False
+            for opponent_player in self.players_opponent:
+                if opponent_player.possession:
+                    return True
+            return False
         elif action == MacroActions.Shoot:
             if player.possession == True:
                 source_x = player.x
@@ -230,6 +229,8 @@ class State():
                 else:
                     values[action.value] = 0
 
+            values[MacroActions.Pass.value] = 0
+            
             actionList.append(random.choices([action for action in MacroActions], \
                                              weights=values[1:], k=1)[0])
 
