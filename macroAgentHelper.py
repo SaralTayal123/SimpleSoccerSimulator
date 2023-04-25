@@ -13,7 +13,7 @@ MACRO_SHOOT_L1_RANGE = 2
 NUM_PLAYERS = 2
 MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 4
 VALUE_OF_TIME = 10
-EXPLORATION_TENDENCY = 2
+EXPLORATION_TENDENCY = 1
 
 class MacroActions(Enum):
     Up = 1
@@ -216,7 +216,7 @@ class State():
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 0
 
-                values[MacroActions.Pass.value] = 10
+                values[MacroActions.Pass.value] = 5
                 if self.agent_team == Team.LEFT:
                     values[MacroActions.Left.value] = 0
                     values[MacroActions.Right.value] = 10
