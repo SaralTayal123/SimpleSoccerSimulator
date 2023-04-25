@@ -229,7 +229,7 @@ class State():
                     values[MacroActions.Down.value] = 0
 
                 values[MacroActions.Pass.value] = 5
-                if self.agent_team == Team.LEFT:
+                if self.team == Team.LEFT:
                     values[MacroActions.Left.value] = 0
                     values[MacroActions.Right.value] = 10
 
@@ -241,7 +241,7 @@ class State():
                     values[MacroActions.Left.value] = 10
                     values[MacroActions.Right.value] = 0
 
-                    for teammate in self.players_opponent:
+                    for teammate in self.players_home:
                         if teammate.x < agent.x:
                             values[MacroActions.Pass.value] *= 10
                             break
@@ -280,12 +280,12 @@ class State():
                     #     values[MacroActions.Right.value] *= 5
                     #     values[MacroActions.Right.value] += 10
 
-                    # if agent.y < otherAgent.y:
-                    #     values[MacroActions.Up.value] *= 5
-                    #     values[MacroActions.Up.value] += 10
-                    # else:
-                    #     values[MacroActions.Down.value] *= 5
-                    #     values[MacroActions.Down.value] += 10
+                    if agent.y < otherAgent.y:
+                        values[MacroActions.Up.value] *= 5
+                        values[MacroActions.Up.value] += 10
+                    else:
+                        values[MacroActions.Down.value] *= 5
+                        values[MacroActions.Down.value] += 10
                 else:
                     # move to ball
                     values[MacroActions.Tackle.value] = 1000
