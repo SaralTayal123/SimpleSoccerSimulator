@@ -124,6 +124,9 @@ class Agent():
         actions = []
         for i, action in enumerate(self.curr_action):
             curr_player = players_home[i]
+            if (curr_player.dribble and env.testShoot(curr_player.playerId, self.team)):
+                actions.append([Actions.SHOOT_BALL, curr_player.playerId, []])
+                continue
             if (env.testTackle(curr_player.playerId, self.team)):
                # greedily tackle if possible
                actions.append([Actions.TACKLE_BALL, curr_player.playerId, []]) 
