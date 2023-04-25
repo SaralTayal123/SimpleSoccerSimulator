@@ -362,7 +362,8 @@ class State():
                 # otherwise
                 # confirm that there's another opponent player in the same position with possession
                 for opponent in players_opponent:
-                    if opponent.x == player.x and opponent.y == player.y and opponent.possession:
+                    dist_to_opp = np.linalg.norm([opponent.x - player.x, opponent.y - player.y], 2)
+                    if dist_to_opp <= 2 and opponent.possession:
                         # 50% chance of getting possession
                         tackleSuccess = np.random.randint(0,10) < 3
                         if tackleSuccess:
