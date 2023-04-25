@@ -11,7 +11,7 @@ NUM_ZONES_Y = 10
 MACRO_SHOOT_L1_RANGE = 2
 
 NUM_PLAYERS = 2
-MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 2 * 5
+MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 4
 VALUE_OF_TIME = 10
 EXPLORATION_TENDENCY = 2
 
@@ -131,7 +131,6 @@ class State():
             else:
                 return False
         elif action == MacroActions.Pass:
-            return True
             player1 = self.players_home[0]
             player2 = self.players_home[1]
             if player == player1 and player1.possession == True:
@@ -205,15 +204,12 @@ class State():
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 0
 
-                values[MacroActions.Pass.value] = 0
+                values[MacroActions.Pass.value] = 10
                 if self.agent_team == Team.LEFT:
                     values[MacroActions.Left.value] = 0
                     values[MacroActions.Right.value] = 10
 
                     for teammate in self.players_home:
-                        dist_to_teammate = np.linalg.norm([teammate.x - agent.x, teammate.y - agent.y], 2)
-                        if dist_to_teammate > 3:
-                            values[MacroActions.Pass.value] = 100
                         if teammate.x > agent.x:
                             values[MacroActions.Pass.value] *= 10
                             break
@@ -222,9 +218,6 @@ class State():
                     values[MacroActions.Right.value] = 0
 
                     for teammate in self.players_opponent:
-                        dist_to_teammate = np.linalg.norm([teammate.x - agent.x, teammate.y - agent.y], 2)
-                        if dist_to_teammate > 3:
-                            values[MacroActions.Pass.value] = 100
                         if teammate.x < agent.x:
                             values[MacroActions.Pass.value] *= 10
                             break
@@ -256,19 +249,19 @@ class State():
                         values[MacroActions.Right.value] = 0
 
                     # move away from teammate
-                    if agent.x < otherAgent.x:
-                        values[MacroActions.Left.value] *= 5
-                        values[MacroActions.Left.value] += 10
-                    else:
-                        values[MacroActions.Right.value] *= 5
-                        values[MacroActions.Right.value] += 10
+                    # if agent.x < otherAgent.x:
+                    #     values[MacroActions.Left.value] *= 5
+                    #     values[MacroActions.Left.value] += 10
+                    # else:
+                    #     values[MacroActions.Right.value] *= 5
+                    #     values[MacroActions.Right.value] += 10
 
-                    if agent.y < otherAgent.y:
-                        values[MacroActions.Up.value] *= 5
-                        values[MacroActions.Up.value] += 10
-                    else:
-                        values[MacroActions.Down.value] *= 5
-                        values[MacroActions.Down.value] += 10
+                    # if agent.y < otherAgent.y:
+                    #     values[MacroActions.Up.value] *= 5
+                    #     values[MacroActions.Up.value] += 10
+                    # else:
+                    #     values[MacroActions.Down.value] *= 5
+                    #     values[MacroActions.Down.value] += 10
                 else:
                     # move to ball
                     values[MacroActions.Tackle.value] = 1000

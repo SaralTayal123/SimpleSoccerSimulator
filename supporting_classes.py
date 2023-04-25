@@ -126,15 +126,15 @@ class Player:
         # distance = min(np.abs(dist_x), np.abs(dist_y)) * np.sqrt(2) + max(np.abs(dist_x), np.abs(dist_y)) - min(np.abs(dist_x), np.abs(dist_y))
 
         # loop through all the players and see how close they are to the ball along the entire path
-        # for player in listOfPlayers:
-        #     if player != self and player != destPlayer:
-        #         resolution = 100
-        #         interpolate_x = np.linspace(source_x, dest_x, resolution)
-        #         interpolate_y = np.linspace(source_y, dest_y, resolution)
-        #         for i in range(resolution):
-        #             distance = np.linalg.norm([interpolate_x[i] - player.pos_x, interpolate_y[i] - player.pos_y], 2)
-        #             if distance <= 1:
-        #                 return player
+        for player in listOfPlayers:
+            if player != self and player != destPlayer:
+                resolution = 100
+                interpolate_x = np.linspace(source_x, dest_x, resolution)
+                interpolate_y = np.linspace(source_y, dest_y, resolution)
+                for i in range(resolution):
+                    distance = np.linalg.norm([interpolate_x[i] - player.pos_x, interpolate_y[i] - player.pos_y], 2)
+                    if distance <= 1:
+                        return player
         return None
     
     def passBall(self, ball, destPlayer, listOfPlayers):
