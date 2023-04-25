@@ -122,7 +122,7 @@ class Enviornment:
 
     def testTackle(self, playerId, team):
         print(team, self.getBallOwnerTeam())
-        if team == self.getBallOwnerTeam():
+        if team == self.getBallOwnerTeam() or team is None:
             return False
         return self.listOfPlayers[playerId].test_tackleBall(self.ball, self.listOfPlayers)
     
