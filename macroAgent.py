@@ -112,9 +112,9 @@ class Agent():
             stateInit = State(depth = 0, agent_team = self.team, team = self.team, players_home = macro_players_home, players_opponent = macro_players_opp, env = env)
             # stateInit.print_state()
 
-            # mctsSearcher = MCTSSearcher(1000)
-            # macro_action = mctsSearcher.search(stateInit, debug_print=True)
-            macro_action = MCTSAction(stateInit.getHeuristicAction())
+            mctsSearcher = MCTSSearcher(1000)
+            macro_action = mctsSearcher.search(stateInit, debug_print=True)
+            # macro_action = MCTSAction(stateInit.getHeuristicAction())
             print("action: ")
             print(macro_action.game_action)
             self.curr_action = macro_action.game_action
@@ -131,7 +131,7 @@ class Agent():
                actions.append([Actions.TACKLE_BALL, curr_player.playerId, []]) 
                continue
             dist_to_ball = np.linalg.norm([curr_player.pos_x - env.getBallPosition()[0], curr_player.pos_y - env.getBallPosition()[1]], 2)
-            if dist_to_ball < 5 and not curr_player.dribble:
+            if dist_to_ball < 5 and not curr_player.dribble and env.getBallOwnerTeam() != self.team:
                 # greedily go to ball if possible
                 go_to_ball_action = getActionMinimizingDistanceToBall(curr_player, env.ball)
                 actions.append([Actions.MOVE, curr_player.playerId, [go_to_ball_action]])

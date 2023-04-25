@@ -1,6 +1,8 @@
 import numpy as np
 from enum import Enum
 
+np.random.seed(0)
+
 SHOOT_L1_RANGE = 2
 
 class Actions(Enum):
@@ -69,7 +71,7 @@ class Player:
 
     def tackleBall(self, ball, listOfPlayers):
         if self.test_tackleBall(ball, listOfPlayers):
-            tackleSuccess = np.random.randint(0,10) > 7
+            tackleSuccess = np.random.randint(0,10) < 3
             if tackleSuccess:
                 # print("Tackle success!")
                 listOfPlayers[ball.playerId].dribble = False

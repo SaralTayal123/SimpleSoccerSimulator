@@ -364,7 +364,7 @@ class State():
                 for opponent in players_opponent:
                     if opponent.x == player.x and opponent.y == player.y and opponent.possession:
                         # 50% chance of getting possession
-                        tackleSuccess = np.random.randint(0,2)
+                        tackleSuccess = np.random.randint(0,10) < 3
                         if tackleSuccess:
                             player.possession = False
                             opponent.possession = True

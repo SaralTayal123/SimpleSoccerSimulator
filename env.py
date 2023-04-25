@@ -121,6 +121,7 @@ class Enviornment:
         return self.listOfPlayers[playerId].test_shootToGoal(self.ball, goal, self.listOfPlayers)
 
     def testTackle(self, playerId, team):
+        print(team, self.getBallOwnerTeam())
         if team == self.getBallOwnerTeam():
             return False
         return self.listOfPlayers[playerId].test_tackleBall(self.ball, self.listOfPlayers)
