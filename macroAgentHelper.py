@@ -61,10 +61,21 @@ class State():
         self.parent = None
         self.env = env
         self.agent_team = agent_team
+        self.ball_start = env.getBallPosition()
         self.terminal = False
         self.oppositeTeam = Team.LEFT
         if self.team == Team.LEFT:
             self.oppositeTeam = Team.RIGHT
+
+        self.init_ball_grabbed = False
+        for player in self.players_home:
+            if player.possession:
+                self.init_ball_grabbed = True
+                break
+        if not self.init_ball_grabbed:
+            for player in self.players_opponent:
+                if player.possession:
+                    self.init_ball_grabbed = True
     
     def __eq__(self, other):
         return self.players_home == other.players_home and self.players_opponent == other.players_opponent and self.team == other.team
@@ -343,15 +354,23 @@ class State():
             other_player = players_home[1-i]
             if action == MacroActions.Up:
                 player.moveUp(NUM_ZONES_X, NUM_ZONES_Y)
+                if not self.init_ball_grabbed and player.x == self.ball_start[0] and player.y == self.ball_start[1]:
+                    player.possession = True
                 # new_value += -1
             elif action == MacroActions.Down:
                 player.moveDown(NUM_ZONES_X, NUM_ZONES_Y)
+                if not self.init_ball_grabbed and player.x == self.ball_start[0] and player.y == self.ball_start[1]:
+                    player.possession = True
                 # new_value += -1
             elif action == MacroActions.Left:
                 player.moveLeft(NUM_ZONES_X, NUM_ZONES_Y)
+                if not self.init_ball_grabbed and player.x == self.ball_start[0] and player.y == self.ball_start[1]:
+                    player.possession = True
                 # new_value += -1
             elif action == MacroActions.Right:
                 player.moveRight(NUM_ZONES_X, NUM_ZONES_Y)
+                if not self.init_ball_grabbed and player.x == self.ball_start[0] and player.y == self.ball_start[1]:
+                    player.possession = True
                 # new_value += -1
             elif action == MacroActions.Tackle:
                 # eq to staying in place

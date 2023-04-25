@@ -24,6 +24,6 @@ while(env.gameRunning):
     for action, playerid, args in actions2:
         env.execute(action, playerid, args)
 
-    env.drawEnviornment(1) # ms update rate
+    env.drawEnviornment(100) # ms update rate
 
     # break
