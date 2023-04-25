@@ -13,7 +13,7 @@ MACRO_SHOOT_L1_RANGE = 2
 NUM_PLAYERS = 2
 MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 2 * 5
 VALUE_OF_TIME = 10
-EXPLORATION_TENDENCY = 2
+EXPLORATION_TENDENCY = 1
 
 class MacroActions(Enum):
     Up = 1
@@ -220,30 +220,30 @@ class State():
                 goal_zone_y = int((goal_mid_y / self.env.dim_y) * NUM_ZONES_Y)
                 if agent.y < goal_zone_y:
                     values[MacroActions.Up.value] = 0
-                    values[MacroActions.Down.value] = 10
+                    values[MacroActions.Down.value] = 100
                 elif agent.y > goal_zone_y:
-                    values[MacroActions.Up.value] = 10
+                    values[MacroActions.Up.value] = 100
                     values[MacroActions.Down.value] = 0
                 else:
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 0
 
-                values[MacroActions.Pass.value] = 5
+                values[MacroActions.Pass.value] = 10
                 if self.team == Team.LEFT:
                     values[MacroActions.Left.value] = 0
-                    values[MacroActions.Right.value] = 10
+                    values[MacroActions.Right.value] = 100
 
                     for teammate in self.players_home:
                         if teammate.x > agent.x:
-                            values[MacroActions.Pass.value] *= 10
+                            values[MacroActions.Pass.value] *= 50
                             break
                 else:
-                    values[MacroActions.Left.value] = 10
+                    values[MacroActions.Left.value] = 100
                     values[MacroActions.Right.value] = 0
 
                     for teammate in self.players_home:
                         if teammate.x < agent.x:
-                            values[MacroActions.Pass.value] *= 10
+                            values[MacroActions.Pass.value] *= 100
                             break
             else:
                 # I don't have the ball
@@ -280,12 +280,12 @@ class State():
                     #     values[MacroActions.Right.value] *= 5
                     #     values[MacroActions.Right.value] += 10
 
-                    if agent.y < otherAgent.y:
-                        values[MacroActions.Up.value] *= 5
-                        values[MacroActions.Up.value] += 10
-                    else:
-                        values[MacroActions.Down.value] *= 5
-                        values[MacroActions.Down.value] += 10
+                    # if agent.y < otherAgent.y:
+                    #     values[MacroActions.Up.value] *= 5
+                    #     values[MacroActions.Up.value] += 10
+                    # else:
+                    #     values[MacroActions.Down.value] *= 5
+                    #     values[MacroActions.Down.value] += 10
                 else:
                     # move to ball
                     values[MacroActions.Tackle.value] = 1000
