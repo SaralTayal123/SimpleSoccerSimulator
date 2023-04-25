@@ -51,7 +51,7 @@ class MacroPlayer():
             self.x = max_x
 
 class State():
-    def __init__(self, depth, agent_team : Team, team : Team, players_home : list[MacroPlayer], players_opponent : list[MacroPlayer], env : Enviornment) -> None:
+    def __init__(self, depth, agent_team : Team, team : Team, players_home, players_opponent, env : Enviornment) -> None:
         self.depth = depth
         self.team = team
         self.players_home = players_home
@@ -185,7 +185,7 @@ class State():
 
         return True
 
-    def getPossibleActions(self) -> list[list[MacroActions]]:
+    def getPossibleActions(self):
         allActions = []
         
         # generate all permutations of actions
@@ -199,7 +199,7 @@ class State():
 
         return allActions
 
-    def getHeuristicAction(self) -> list[MacroActions]:
+    def getHeuristicAction(self):
         actionList = []
         teamPossession = False
         for agent in self.players_home:
@@ -324,7 +324,7 @@ class State():
 
         return actionList
 
-    def getNextState(self, actions : list[MacroActions]):
+    def getNextState(self, actions):
         
         # create a duplicate state
 
