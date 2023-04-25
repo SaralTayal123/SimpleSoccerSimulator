@@ -57,6 +57,7 @@ class Player:
         if distToBall < 2 and self.dribble == False and ball.captured == False:
             self.dribble = True
             ball.captured = True
+            print("capturing ball")
             ball.playerId = self.playerId
         
     def test_tackleBall(self, ball, listOfPlayers):
@@ -73,7 +74,7 @@ class Player:
         if self.test_tackleBall(ball, listOfPlayers):
             tackleSuccess = np.random.randint(0,10) < 3
             if tackleSuccess:
-                # print("Tackle success!")
+                print("Tackle success!")
                 listOfPlayers[ball.playerId].dribble = False
                 ball.playerId = self.playerId
                 self.dribble = True
@@ -157,6 +158,7 @@ class Player:
         # process new ball ownership
         self.dribble = False
         playerIntercept.dribble = True
+        print("pass finished")
         ball.playerId = playerIntercept.playerId
         ball.pos_x = playerIntercept.pos_x
         ball.pos_y = playerIntercept.pos_y

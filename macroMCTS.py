@@ -22,7 +22,7 @@ class MCTSState():
 
     def getCurrentPlayer(self):
         # 1 for maximiser, -1 for minimiser
-        if (self.game_state.team == Team.LEFT):
+        if (self.game_state.team == Team.RIGHT):
             # team left is always the maximiser
             return 1
         else:
