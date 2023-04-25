@@ -11,9 +11,9 @@ NUM_ZONES_Y = 10
 MACRO_SHOOT_L1_RANGE = 2
 
 NUM_PLAYERS = 2
-MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 2 * 5
+MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 2 * 2
 VALUE_OF_TIME = 10
-EXPLORATION_TENDENCY = 1
+EXPLORATION_TENDENCY = 10
 
 class MacroActions(Enum):
     Up = 1
@@ -215,7 +215,7 @@ class State():
             values = [0 for _ in range(len(MacroActions)+1)]
             if agent.possession:
                 values[MacroActions.Tackle.value] = 0
-                values[MacroActions.Shoot.value] = 10000
+                values[MacroActions.Shoot.value] = 100000
                 (_, goal_mid_y) = self.env.getGoal(self.team).get_mid()
                 goal_zone_y = int((goal_mid_y / self.env.dim_y) * NUM_ZONES_Y)
                 if agent.y < goal_zone_y:
@@ -235,7 +235,7 @@ class State():
 
                     for teammate in self.players_home:
                         if teammate.x > agent.x:
-                            values[MacroActions.Pass.value] *= 50
+                            values[MacroActions.Pass.value] *= 1000
                             break
                 else:
                     values[MacroActions.Left.value] = 100
@@ -288,26 +288,26 @@ class State():
                     #     values[MacroActions.Down.value] += 10
                 else:
                     # move to ball
-                    values[MacroActions.Tackle.value] = 1000
+                    values[MacroActions.Tackle.value] = 100000
                     
                     (ball_x, ball_y) = self.env.getBallPosition()
                     ball_zone_x = int((ball_x / self.env.dim_x) * NUM_ZONES_X)
                     ball_zone_y = int((ball_y / self.env.dim_y) * NUM_ZONES_Y)
                     if agent.x < ball_zone_x:
-                        values[MacroActions.Right.value] = 10
+                        values[MacroActions.Right.value] = 100
                         values[MacroActions.Left.value] = 0
                     elif agent.x > ball_zone_x:
                         values[MacroActions.Right.value] = 0
-                        values[MacroActions.Left.value] = 10
+                        values[MacroActions.Left.value] = 100
                     else:
                         values[MacroActions.Right.value] = 0
                         values[MacroActions.Left.value] = 0
 
                     if agent.y < ball_zone_y:
                         values[MacroActions.Up.value] = 0
-                        values[MacroActions.Down.value] = 10
+                        values[MacroActions.Down.value] = 100
                     elif agent.y > ball_zone_y:
-                        values[MacroActions.Up.value] = 10
+                        values[MacroActions.Up.value] = 100
                         values[MacroActions.Down.value] = 0
                     else:
                         values[MacroActions.Up.value] = 0
