@@ -85,7 +85,6 @@ class Agent():
         """
 
         players_home = env.getPlayers(self.team)
-
         if (self.curr_action == None or self.time_taken_for_curr >= 0):
             oppositeTeam = Team.LEFT
             if self.team == Team.LEFT:
@@ -113,9 +112,9 @@ class Agent():
             stateInit = State(depth = 0, agent_team = self.team, team = self.team, players_home = macro_players_home, players_opponent = macro_players_opp, env = env)
             # stateInit.print_state()
 
-            # mctsSearcher = MCTSSearcher(1000)
-            # macro_action = mctsSearcher.search(stateInit, debug_print=True)
-            macro_action = MCTSAction(stateInit.getHeuristicAction())
+            mctsSearcher = MCTSSearcher(1000)
+            macro_action = mctsSearcher.search(stateInit, debug_print=True)
+            # macro_action = MCTSAction(stateInit.getHeuristicAction())
             print("action: ")
             print(macro_action.game_action)
             self.curr_action = macro_action.game_action
@@ -124,9 +123,9 @@ class Agent():
         actions = []
         for i, action in enumerate(self.curr_action):
             curr_player = players_home[i]
-            if (curr_player.dribble and env.testShoot(curr_player.playerId, self.team)):
-                actions.append([Actions.SHOOT_BALL, curr_player.playerId, []])
-                continue
+            # if (curr_player.dribble and env.testShoot(curr_player.playerId, self.team)):
+            #     actions.append([Actions.SHOOT_BALL, curr_player.playerId, []])
+            #     continue
             if (env.testTackle(curr_player.playerId, self.team)):
                # greedily tackle if possible
                actions.append([Actions.TACKLE_BALL, curr_player.playerId, []]) 

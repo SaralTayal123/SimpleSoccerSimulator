@@ -228,7 +228,7 @@ class State():
                     values[MacroActions.Up.value] = 0
                     values[MacroActions.Down.value] = 0
 
-                values[MacroActions.Pass.value] = 5
+                values[MacroActions.Pass.value] = 10
                 if self.agent_team == Team.LEFT:
                     values[MacroActions.Left.value] = 0
                     values[MacroActions.Right.value] = 10

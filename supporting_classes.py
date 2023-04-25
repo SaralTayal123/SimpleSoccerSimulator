@@ -173,7 +173,7 @@ class Player:
 
         for player in listOfPlayers:
             if player != self and player.playerTeam != self.playerTeam:
-                resolution = 1000
+                resolution = 10
                 interpolate_x = np.linspace(self.pos_x, goal.pos_x, resolution)
                 interpolate_y = np.linspace(self.pos_y, goalMid, resolution)
                 for i in range(resolution):
