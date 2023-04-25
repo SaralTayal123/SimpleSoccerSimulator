@@ -53,13 +53,13 @@ class MCTSState():
         return self.game_state == other.game_state
 
 def heuristicPolicy(state : MCTSState):
-    # print("START OF ROLLOUT")
+    print("START OF ROLLOUT")
     while not state.isTerminal():
         action = MCTSAction(state.game_state.getHeuristicAction())
         state = state.takeAction(action)
-        # print("taking action: " + action.to_string())
-        # state.game_state.print_state()
-    # print("END OF ROLLOUT")
+        print("taking action: " + action.to_string())
+        state.game_state.print_state()
+    print("END OF ROLLOUT")
     return state.getReward()
 
 class MCTSSearcher:

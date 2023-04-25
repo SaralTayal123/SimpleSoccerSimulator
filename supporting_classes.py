@@ -69,7 +69,7 @@ class Player:
 
     def tackleBall(self, ball, listOfPlayers):
         if self.test_tackleBall(ball, listOfPlayers):
-            tackleSuccess = np.random.randint(0,10) < 2
+            tackleSuccess = np.random.randint(0,10) > 7
             if tackleSuccess:
                 # print("Tackle success!")
                 listOfPlayers[ball.playerId].dribble = False
