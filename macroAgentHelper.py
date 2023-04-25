@@ -85,8 +85,17 @@ class State():
             ballZoneX = int((self.env.getBallPosition()[0] / self.env.dim_x) * NUM_ZONES_X)
             ballZoneY = int((self.env.getBallPosition()[1] / self.env.dim_y) * NUM_ZONES_Y)
 
-            if not (ballZoneX == player.x and ballZoneY == player.y and player.possession != self.team):
+            if not (ballZoneX == player.x and ballZoneY == player.y):
                 return False
+            
+            if player in self.players_home:
+                for team_player in self.players_home:
+                    if team_player.possession:
+                        return False
+            else:
+                for team_player in self.players_opponent:
+                    if team_player.possession:
+                        return False
         elif action == MacroActions.Shoot:
             if player.possession == True:
                 source_x = player.x
