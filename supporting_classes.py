@@ -59,10 +59,14 @@ class Player:
             ball.captured = True
             print("capturing ball")
             ball.playerId = self.playerId
+            ball.move(self.pos_x, self.pos_y)
         
     def test_tackleBall(self, ball, listOfPlayers):
-        if self.dribble == True:
+        if self.dribble == True or ball.captured == False:
             return False
+        for player in listOfPlayers:
+            if player.playerId == ball.playerId and player.playerTeam == self.playerTeam:
+                return False
         
         distanceToBall = np.linalg.norm([ball.pos_x - self.pos_x, ball.pos_y - self.pos_y], 2)
 
@@ -78,6 +82,7 @@ class Player:
                 listOfPlayers[ball.playerId].dribble = False
                 ball.playerId = self.playerId
                 self.dribble = True
+                ball.move(self.pos_x, self.pos_y)
 
     
     def move(self, dir, listOfPlayers, ball, dim_x, dim_y):
@@ -132,11 +137,11 @@ class Player:
         for player in listOfPlayers:
             if player != self and player != destPlayer:
                 resolution = 100
-                interpolate_x = np.linspace(source_x, dest_x, resolution)
-                interpolate_y = np.linspace(source_y, dest_y, resolution)
-                for i in range(resolution):
+                interpolate_x = np.linspace(source_x, dest_x, resolution)[1:]
+                interpolate_y = np.linspace(source_y, dest_y, resolution)[1:]
+                for i in range(resolution-1):
                     distance = np.linalg.norm([interpolate_x[i] - player.pos_x, interpolate_y[i] - player.pos_y], 2)
-                    if distance <= 1:
+                    if distance <= 0:
                         return player
         return None
     
@@ -200,6 +205,7 @@ class Player:
         if playerIntercept != None:
             playerIntercept.dribble = True
             ball.playerId = playerIntercept.playerId
+            ball.move(playerIntercept.pos_x, playerIntercept.pos_y)
             self.dribble = False
             print("Shot failed", playerIntercept.playerId)
             return False

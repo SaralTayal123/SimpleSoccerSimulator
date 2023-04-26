@@ -53,8 +53,8 @@ class Enviornment:
 
         self.listOfPlayers.append(Player(x_1, y_1, 0, Team.LEFT))
         self.listOfPlayers.append(Player(x_1, y_2, 1, Team.LEFT))
-        self.listOfPlayers.append(Player(x_2, y_1, 2, Team.RIGHT))
-        self.listOfPlayers.append(Player(x_2, y_2, 3, Team.RIGHT))
+        self.listOfPlayers.append(Player(x_2+4, y_1, 2, Team.RIGHT))
+        self.listOfPlayers.append(Player(x_2+4, y_2, 3, Team.RIGHT))
         
         self._init_ballAndGoals()
 
@@ -122,7 +122,7 @@ class Enviornment:
 
     def testTackle(self, playerId, team):
         print(team, self.getBallOwnerTeam())
-        if team == self.getBallOwnerTeam() or team is None:
+        if team == self.getBallOwnerTeam() or self.getBallOwnerTeam() is None:
             return False
         return self.listOfPlayers[playerId].test_tackleBall(self.ball, self.listOfPlayers)
     

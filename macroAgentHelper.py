@@ -11,9 +11,9 @@ NUM_ZONES_Y = 10
 MACRO_SHOOT_L1_RANGE = 2
 
 NUM_PLAYERS = 2
-MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 2 * 2
-VALUE_OF_TIME = 50
-EXPLORATION_TENDENCY = 10
+MAX_DEPTH = (NUM_ZONES_X + NUM_ZONES_Y) * 2
+VALUE_OF_TIME = 100
+EXPLORATION_TENDENCY = 0
 
 class MacroActions(Enum):
     Up = 1
@@ -323,7 +323,6 @@ class State():
                     else:
                         values[MacroActions.Up.value] = 0
                         values[MacroActions.Down.value] = 0
-            
             for action in MacroActions:
                 if self.testLegality(action, agent):
                     values[action.value] += EXPLORATION_TENDENCY
@@ -332,7 +331,6 @@ class State():
 
             actionList.append(random.choices([action for action in MacroActions], \
                                              weights=values[1:], k=1)[0])
-
         return actionList
 
     def getNextState(self, actions):
